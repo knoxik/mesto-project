@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mesto</title>
+  <link rel="stylesheet" href="pages/index.css">
+</head>
+<body class="page">
+  <header class="header">
+    <img class="header__image" src="./images/logo.svg" alt="Логотив mesto">
+  </header>
+
+  <section class="profile">
+    <div class="profile__content">
+      <img class="profile__avatar" src="./images/avatar.jpg">
+      <div class="profile__wrapper-info">
+        <div class="profile__info">
+          <h1 class="profile__name">Жак-Ив Кусто</h1>
+          <button class="profile__edit-button">
+            <img src="./images/icon-edit-button.svg">
+          </button>
+        </div>
+
+        <p class="profile__description">Исследователь океана</p>
+      </div>
+
+    </div>
+
+    <button class="profile__add-button">
+      <img src="./images/icon-add-button.svg">
+    </button>
+  </section>
+
+  <section class="card-grid">
+    <div class="card-grid__item">
+      <img class="card-grid__image" src="./images/kirill-pershin-1088404-unsplash.jpg">
+      <div class="card-grid__content">
+        <h2 class="card-grid__title">Карачаевск</h2>
+        <button class="card-grid__like-button card-grid__like-button_active">
+          <!-- <img class="card-grid__like-icon" src="./images/card-like.svg"> -->
+          <img class="card-grid__like-icon" src="./images/like-icon_active.svg">
+        </button>
+      </div>
+    </div>
+    <div class="card-grid__item">
+      <img class="card-grid__image" src="./images/kirill-pershin-1088404-unsplash.jpg">
+      <div class="card-grid__content">
+        <h2 class="card-grid__title">1</h2>
+        <button class="card-grid__like-button">
+          <img class="card-grid__like-icon" src="./images/card-like.svg">
+        </button>
+      </div>
+    </div>
+    <div class="card-grid__item">
+      <img class="card-grid__image" src="./images/kirill-pershin-1088404-unsplash.jpg">
+      <div class="card-grid__content">
+        <h2 class="card-grid__title">1</h2>
+        <button class="card-grid__like-button">
+          <img class="card-grid__like-icon" src="./images/card-like.svg">
+        </button>
+      </div>
+    </div>
+    <div class="card-grid__item">
+      <img class="card-grid__image" src="./images/kirill-pershin-1088404-unsplash.jpg">
+      <div class="card-grid__content">
+        <h2 class="card-grid__title">1</h2>
+        <button class="card-grid__like-button">
+          <img class="card-grid__like-icon" src="./images/card-like.svg">
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <p class="footer__copyright">&copy; 2022 Mesto Russia</p>
+  </footer>
+
+  <div class="popup popup_opened">
+    <form class="popup__container">
+      <button class="popup__close-button">
+        <img class="popup__close-icon" src="./images/Close_Icon.svg">
+      </button>
+      <h2 class="popup__title">Редактировать профиль</h2>
+      <label class="popup__label">
+        <input class="popup__input" type="text" value="Жак-Ив Кусто" placeholder="Имя" required>
+      </label>
+      <label class="popup__label">
+        <input class="popup__input" type="text" value="Исследователь океана" placeholder="Описание" required>
+      </label>
+      <button class="popup__button" type="submit">Сохранить</button>
+    </form>
+  </div>
+</body>
+</html>

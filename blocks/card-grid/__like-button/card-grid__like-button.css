@@ -1,0 +1,12 @@
+.card-grid__like-button {
+  padding: 0 5px 0 0;
+  align-self: flex-end;
+  background-color: inherit;
+  border: none;
+  cursor: pointer;
+  transition: opacity .3s;
+}
+
+.card-grid__like-button:hover {
+  opacity: .5;
+}
