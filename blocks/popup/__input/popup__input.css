@@ -10,6 +10,6 @@
   padding-bottom: 13px;
 }
 
-.popup__label:first-of-type .popup__input {
+.popup__input:first-of-type {
   margin-top: 0;
 }

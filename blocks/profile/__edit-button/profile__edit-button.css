@@ -6,6 +6,9 @@
   background-color: inherit;
   border: 1px solid #FFFFFF;
   cursor: pointer;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-image: url('../../../images/icon-edit-button.svg');
   transition: opacity .3s;
 }
 
@@ -16,5 +19,8 @@
 @media screen and (max-width: 768px) {
   .profile__edit-button {
     margin-left: 10px;
+    width: 18px;
+    height: 18px;
+    background-image: url('../../../images/edit-icon-small.svg');
   }
 }

@@ -18,6 +18,7 @@
 @import url(../blocks/card-grid/__content/card-grid__content.css);
 @import url(../blocks/card-grid/__title/card-grid__title.css);
 @import url(../blocks/card-grid/__like-button/card-grid__like-button.css);
+@import url(../blocks/card-grid/__like-button/_active/card-grid__like-button_active.css);
 @import url(../blocks/footer/footer.css);
 @import url(../blocks/footer/__copyright/footer__copyright.css);
 @import url(../blocks/popup/popup.css);

@@ -1,5 +1,5 @@
 .card-grid__title {
-  margin: 0;
+  margin: 0 35px 0 0;
   font-size: 24px;
   font-weight: 900;
   line-height: 29px;
@@ -7,5 +7,4 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
-  padding-right: 21px;
 }

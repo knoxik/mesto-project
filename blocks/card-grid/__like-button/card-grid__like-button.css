@@ -1,9 +1,14 @@
 .card-grid__like-button {
-  padding: 0 5px 0 0;
+  width: 22px;
+  height: 19px;
+  padding: 0 22px 0 0;
   align-self: flex-end;
   background-color: inherit;
   border: none;
   cursor: pointer;
+  background-image: url('../../../images/card-like.svg');
+  background-position: center center;
+  background-repeat: no-repeat;
   transition: opacity .3s;
 }
 

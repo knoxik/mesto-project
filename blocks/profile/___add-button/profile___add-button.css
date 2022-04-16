@@ -6,6 +6,9 @@
   background-color: inherit;
   border: 2px solid #FFFFFF;
   border-radius: 2px;
+  background-image: url('../../../images/icon-add-button.svg');
+  background-repeat: no-repeat;
+  background-position: center center;
   transition: opacity .3s;
 }
 
@@ -17,5 +20,6 @@
   .profile__add-button {
     margin: 36px 0 0 0;
     width: 100%;
+    background-image: url('../../../images/add-icon-small.svg');
   }
 }
