@@ -1,16 +1,16 @@
-let content = document.querySelector('.content');
-let profileEditButton = content.querySelector('.profile__edit-button');
-let popupCloseButton = document.querySelector('.popup__close-button');
-let popupSubmitButton = document.querySelector('.popup__button');
+const content = document.querySelector('.content');
+const profileEditButton = content.querySelector('.profile__edit-button');
+const popupCloseButton = document.querySelector('.popup__close-button');
+const popupSubmitButton = document.querySelector('.popup__button');
 
-let profileName = content.querySelector('.profile__name');
-let profileDescription = content.querySelector('.profile__description');
-let popupName = document.querySelector('.popup__input_name');
-let popupDescription = document.querySelector('.popup__input_description');
+const profileName = content.querySelector('.profile__name');
+const profileDescription = content.querySelector('.profile__description');
+const popupName = document.querySelector('.popup__input_name');
+const popupDescription = document.querySelector('.popup__input_description');
 
-let editProfileForm = document.getElementsByName('editProfile')[0];
-let addPlaceForm = document.getElementsByName('addPlace')[0];
-let placeAddButton = content.querySelector('.profile__add-button');
+const editProfileForm = document.getElementsByName('editProfile')[0];
+const addPlaceForm = document.getElementsByName('addPlace')[0];
+const placeAddButton = content.querySelector('.profile__add-button');
 
 const editProfilePopup = document.querySelector('#editProfilePopup');
 const addPlacePopup = document.querySelector('#addPlacePopup');
@@ -43,7 +43,7 @@ const initialCardsArray = [
   },
   ];
 
-let cardContainer = content.querySelector('.card-grid');
+const cardContainer = content.querySelector('.card-grid');
 function savePlace(placeName, placeLink) {
   const cardTemplate = document.querySelector('#card-grid__item').content;
   const cardElement = cardTemplate.querySelector('.card-grid__item').cloneNode(true);
@@ -124,8 +124,8 @@ function main() {
   addPlaceForm.addEventListener('submit', function(evt) {
     evt.preventDefault();
     showOrClosePopup(addPlacePopup);
-    let placeName = document.querySelector('.popup__input_place-name').value;
-    let placeLink = document.querySelector('.popup__input_place-img').value;
+    const placeName = document.querySelector('.popup__input_place-name').value;
+    const placeLink = document.querySelector('.popup__input_place-img').value;
     savePlace(placeName, placeLink);
   });
 }
