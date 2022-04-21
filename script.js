@@ -18,7 +18,18 @@ const fullImagePopup = document.querySelector('#fullImagePopup');
 const placeName = document.querySelector('.popup__input_place-name');
 const placeLink = document.querySelector('.popup__input_place-img');
 
-import {initialCardsArray} from './initialCards.js';
+// const initialCardsArray = await import('./initialCards.js');
+
+// import('./initialCards.js')
+//   .then(obj => obj.initialCardsArray)
+//   .catch(err => 'ошибка загрузки, например если нет такого модуля')
+
+// import('./initialCards.js')
+//   .then((module) => {
+//     initialCardsArray = module.initialCardsArray
+//   });
+
+// console.log(initialCardsArray)
 
 const cardContainer = content.querySelector('.card-grid');
 function createPlace(placeNameValue, placeLinkValue) {
@@ -80,10 +91,15 @@ function createAndAddInitialCards(initialCardsArray) {
     const card = createPlace(initialCardsArray[i].name, initialCardsArray[i].link);
     addPlace(card, cardContainer);
   }
+
 }
 
 function main() {
-  createAndAddInitialCards(initialCardsArray);
+  import('./initialCards.js')
+  .then((module) => {
+    initialCardsArray = module.initialCardsArray;
+    createAndAddInitialCards(initialCardsArray);
+  });
 
   profileEditButton.addEventListener('click', function(evt) {
     showOrClosePopup(editProfilePopup);
