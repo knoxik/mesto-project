@@ -98,6 +98,7 @@ function main() {
     showOrClosePopup(editProfilePopup);
     saveProfileInfo();
   });
+
   addPlaceForm.addEventListener('submit', function(evt) {
     evt.preventDefault();
     showOrClosePopup(addPlacePopup);
@@ -109,8 +110,7 @@ function main() {
 
   popupCloseButtons.forEach(function(button) {
     button.addEventListener('click', function(evt) {
-      obj = evt.target.closest('.popup');
-      showOrClosePopup(obj);
+      showOrClosePopup(evt.target.closest('.popup'));
     });
   });
 }
