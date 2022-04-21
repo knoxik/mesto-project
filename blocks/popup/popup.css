@@ -5,9 +5,12 @@
   right: 0;
   bottom: 0;
   background-color: rgba(0, 0, 0, .5);
-  display: none;
+  visibility: hidden;
+  display: flex;
   justify-content: center;
   align-items: center;
+  opacity: 0;
+  transition:visibility 0s linear 0.5s,opacity 0.5s linear;
 }
 
 @media screen and (max-width: 768px) {
