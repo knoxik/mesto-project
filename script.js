@@ -17,21 +17,8 @@ const addPlacePopup = document.querySelector('#addPlacePopup');
 const fullImagePopup = document.querySelector('#fullImagePopup');
 const placeName = document.querySelector('.popup__input_place-name');
 const placeLink = document.querySelector('.popup__input_place-img');
-
-// const initialCardsArray = await import('./initialCards.js');
-
-// import('./initialCards.js')
-//   .then(obj => obj.initialCardsArray)
-//   .catch(err => 'ошибка загрузки, например если нет такого модуля')
-
-// import('./initialCards.js')
-//   .then((module) => {
-//     initialCardsArray = module.initialCardsArray
-//   });
-
-// console.log(initialCardsArray)
-
 const cardContainer = content.querySelector('.card-grid');
+
 function createPlace(placeNameValue, placeLinkValue) {
   const cardTemplate = document.querySelector('#card-grid__item').content;
   const cardElement = cardTemplate.querySelector('.card-grid__item').cloneNode(true);
