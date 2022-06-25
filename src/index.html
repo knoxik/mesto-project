@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mesto</title>
+</head>
+<body class="page">
+  <header class="header">
+    <img class="header__image" src="<%=require('./images/logo.svg')%>" alt="Логотив mesto">
+  </header>
+
+  <main class="content">
+    <section class="profile">
+      <div class="profile__content">
+        <div class="profile__wrapper-avatar">
+          <img class="profile__avatar" src="<%=require('./images/avatar.jpg')%>" alt="Аватарка">
+          <button class="profile__avatar-btn"></button>
+        </div>
+        <div class="profile__wrapper-info">
+          <div class="profile__info">
+            <h1 class="profile__name">Жак-Ив Кусто</h1>
+            <button class="profile__edit-button" type="button"></button>
+          </div>
+
+          <p class="profile__description">Исследователь океана</p>
+        </div>
+
+      </div>
+
+      <button class="profile__add-button" type="button"></button>
+    </section>
+
+    <section class="card-grid">
+      <template id="card-grid__item">
+        <div class="card-grid__item">
+          <button class="card-grid__trash-btn" type="button"></button>
+          <img class="card-grid__image">
+          <div class="card-grid__content">
+            <h2 class="card-grid__title"></h2>
+            <button class="card-grid__like-button" type="button"></button>
+          </div>
+        </div>
+      </template>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p class="footer__copyright">&copy; 2022 Mesto Russia</p>
+  </footer>
+
+  <div class="popup" id="editProfilePopup">
+    <div class="popup__container">
+      <button class="popup__close-button" type="button">
+        <img class="popup__close-icon" src="<%=require('./images/Close_Icon.svg')%>" alt="Иконка закрыть окно">
+      </button>
+      <form class="form" name="editProfile" novalidate>
+        <h2 class="popup__title">Редактировать профиль</h2>
+        <input class="popup__input" id="name-input" name="profileName" type="text" value="" placeholder="Имя" minlength=2 maxlength=40 required>
+        <span class="popup__input-error name-input-error"></span>
+        <input class="popup__input" id="description-input" name="profileDescription" type="text" value="" placeholder="Описание" minlength=2 maxlength=200 required>
+        <span class="popup__input-error description-input-error"></span>
+        <button class="popup__button" type="submit">Сохранить</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="popup" id="addPlacePopup">
+    <div class="popup__container">
+      <button class="popup__close-button" type="button">
+        <img class="popup__close-icon" src="<%=require('./images/Close_Icon.svg')%>" alt="Иконка закрыть окно">
+      </button>
+      <form class="form" name="addPlace" novalidate>
+        <h2 class="popup__title">Новое место</h2>
+        <input class="popup__input" id="name-input" name="placeName" type="text" value="" placeholder="Название" minlength=2 maxlength=30 required>
+        <span class="popup__input-error name-input-error"></span>
+        <input class="popup__input" id="url-input" name="placeLink" type="url" value="" placeholder="Ссылка на картинку" required>
+        <span class="popup__input-error url-input-error"></span>
+        <button class="popup__button" type="submit">Создать</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="popup" id="updateAvatarPopup">
+    <div class="popup__container">
+      <button class="popup__close-button" type="button">
+        <img class="popup__close-icon" src="<%=require('./images/Close_Icon.svg')%>" alt="Иконка закрыть окно">
+      </button>
+      <form class="form" name="updateAvatar" novalidate>
+        <h2 class="popup__title">Обновить аватар</h2>
+        <input class="popup__input" id="url-input" name="avatarLink" type="url" value="" placeholder="Ссылка на изображение" required>
+        <span class="popup__input-error url-input-error"></span>
+        <button class="popup__button" type="submit">Сохранить</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="popup" id="fullImagePopup">
+    <div class="popup__container popup__container_image">
+      <button class="popup__close-button" type="button">
+        <img class="popup__close-icon" src="<%=require('./images/Close_Icon.svg')%>" alt="Иконка закрыть окно">
+      </button>
+      <img class="popup__image">
+      <h2 class="popup__caption"></h2>
+    </div>
+  </div>
+</body>
+</html>

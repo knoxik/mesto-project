@@ -1,0 +1,22 @@
+.profile__avatar-btn {
+  visibility: hidden;
+  opacity: 0;
+  position: absolute;
+  margin: auto;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 0;
+  background-image: url(../../../images/update-avatar-icon.svg);
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-color: inherit;
+  cursor: pointer;
+  border: none;
+  transition: visibility .3s, opacity .3s;
+}
+
+.profile__wrapper-avatar:hover .profile__avatar-btn {
+  visibility: visible;
+  opacity: 1;
+}
