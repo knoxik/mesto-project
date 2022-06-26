@@ -2,13 +2,14 @@ import '../pages/index.css';
 import { openPopup, closePopup } from './modal.js';
 import { createPlace, addPlace, deletePlace, createAndAddInitialCards } from './card.js';
 import { initialCardsArray } from './initialCards.js';
-import { enableValidation } from './validate.js';
+import { enableValidation, toggleButtonState } from './validate.js';
 import { saveProfileInfo, editProfileInfo, updateAvatar,
          editProfileForm, updateAvatarForm } from './profile.js';
 
 const content = document.querySelector('.content');
 const profileEditButton = content.querySelector('.profile__edit-button');
 export const popups = document.querySelectorAll('.popup')
+export const cardTemplate = document.querySelector('#card-grid__item').content;
 
 const addPlaceForm =  document.forms.addPlace;
 const placeAddButton = content.querySelector('.profile__add-button');
@@ -18,10 +19,20 @@ const placeLink = addPlaceForm.elements.placeLink;
 const editProfilePopup = document.querySelector('#editProfilePopup');
 const addPlacePopup = document.querySelector('#addPlacePopup');
 const fullImagePopup = document.querySelector('#fullImagePopup');
+const fullImageCaption = fullImagePopup.querySelector('.popup__caption');
+const fullImageElement = fullImagePopup.querySelector('.popup__image');
 const cardContainer = content.querySelector('.card-grid');
 
 const updateAvatarButton = content.querySelector('.profile__avatar-btn');
-const updateAvatarPopup = document.querySelector('#updateAvatarPopup')
+const updateAvatarPopup = document.querySelector('#updateAvatarPopup');
+export const validateConfig = {
+  formSelector: '.form',
+  inputSelector: '.popup__input',
+  submitButtonSelector: '.popup__button',
+  inactiveButtonClass: 'popup__button_disabled',
+  inputErrorClass: 'popup__input_error',
+  errorClass: 'popup__input-error_active'
+};
 
 function main() {
   createAndAddInitialCards(initialCardsArray, cardContainer);
@@ -37,10 +48,9 @@ function main() {
     else if (target.classList.contains('card-grid__image')) {
       const cardTitle = target.closest('.card-grid__item').querySelector('.card-grid__title');
       const cardImage = target.closest('.card-grid__image');
-      fullImagePopup.querySelector('.popup__caption').textContent = cardTitle.textContent;
-      const image = fullImagePopup.querySelector('.popup__image');
-      image.src = cardImage.src;
-      image.alt = cardImage.alt;
+      fullImageCaption.textContent = cardTitle.textContent;
+      fullImageElement.src = cardImage.src;
+      fullImageElement.alt = cardImage.alt;
       openPopup(fullImagePopup);
     }
   });
@@ -67,6 +77,7 @@ function main() {
 
   addPlaceForm.addEventListener('submit', function(evt) {
     evt.preventDefault();
+    toggleButtonState([], evt.submitter, validateConfig);
     closePopup(addPlacePopup);
     const place = createPlace(placeName.value, placeLink.value);
     addPlace(place, cardContainer);
@@ -82,7 +93,7 @@ function main() {
     });
   });
 
-  enableValidation();
+  enableValidation(validateConfig);
 }
 
 main();

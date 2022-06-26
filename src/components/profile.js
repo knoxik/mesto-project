@@ -1,11 +1,13 @@
 import { closePopup } from "./modal.js";
-
+import { toggleButtonState } from './validate.js'
+import { validateConfig } from './index.js'
 export const editProfileForm = document.forms.editProfile;
 export const updateAvatarForm = document.forms.updateAvatar;
 const profileName = document.querySelector('.profile__name');
 const profileDescription = document.querySelector('.profile__description');
 const popupName = editProfileForm.elements.profileName;
 const popupDescription = editProfileForm.elements.profileDescription;
+const profileAvatar = document.querySelector('.profile__avatar');
 
 
 export function saveProfileInfo() {
@@ -21,8 +23,8 @@ export function editProfileInfo() {
 
 export function updateAvatar(evt) {
   evt.preventDefault();
+  toggleButtonState([], evt.submitter, validateConfig);
   const link = updateAvatarForm.elements.avatarLink;
-  const profileAvatar = document.querySelector('.profile__avatar');
   profileAvatar.src = link.value;
   closePopup(updateAvatarPopup);
   updateAvatarForm.reset();

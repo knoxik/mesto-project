@@ -1,3 +1,5 @@
+import {cardTemplate} from './index.js';
+
 export function createAndAddInitialCards(initialCardsArray, cardContainer) {
   for (let i = 0; i < initialCardsArray.length; i++) {
     const card = createPlace(initialCardsArray[i].name, initialCardsArray[i].link);
@@ -6,10 +8,8 @@ export function createAndAddInitialCards(initialCardsArray, cardContainer) {
 }
 
 export function createPlace(placeNameValue, placeLinkValue) {
-  const cardTemplate = document.querySelector('#card-grid__item').content;
   const cardElement = cardTemplate.querySelector('.card-grid__item').cloneNode(true);
   const cardImage = cardElement.querySelector('.card-grid__image');
-
   cardImage.src = placeLinkValue;
   cardImage.alt = placeNameValue;
   cardElement.querySelector('.card-grid__title').textContent = placeNameValue;
