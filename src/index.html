@@ -7,6 +7,7 @@
   <title>Mesto</title>
 </head>
 <body class="page">
+  <div class="page__loader"></div>
   <header class="header">
     <img class="header__image" src="<%=require('./images/logo.svg')%>" alt="Логотив mesto">
   </header>
@@ -15,16 +16,16 @@
     <section class="profile">
       <div class="profile__content">
         <div class="profile__wrapper-avatar">
-          <img class="profile__avatar" src="<%=require('./images/avatar.jpg')%>" alt="Аватарка">
+          <img class="profile__avatar" alt="Аватарка">
           <button class="profile__avatar-btn"></button>
         </div>
         <div class="profile__wrapper-info">
           <div class="profile__info">
-            <h1 class="profile__name">Жак-Ив Кусто</h1>
+            <h1 class="profile__name"></h1>
             <button class="profile__edit-button" type="button"></button>
           </div>
 
-          <p class="profile__description">Исследователь океана</p>
+          <p class="profile__description"></p>
         </div>
 
       </div>
@@ -39,7 +40,10 @@
           <img class="card-grid__image">
           <div class="card-grid__content">
             <h2 class="card-grid__title"></h2>
-            <button class="card-grid__like-button" type="button"></button>
+            <div class="card-grid__like-wrapper">
+              <button class="card-grid__like-button" type="button"></button>
+              <p class="card-grid__like-counter"></p>
+            </div>
           </div>
         </div>
       </template>
@@ -61,7 +65,9 @@
         <span class="popup__input-error name-input-error"></span>
         <input class="popup__input" id="description-input" name="profileDescription" type="text" value="" placeholder="Описание" minlength=2 maxlength=200 required>
         <span class="popup__input-error description-input-error"></span>
-        <button class="popup__button" type="submit">Сохранить</button>
+        <button class="popup__button" type="submit">
+          <span class="popup__button_text">Сохранить</span>
+        </button>
       </form>
     </div>
   </div>
@@ -77,7 +83,9 @@
         <span class="popup__input-error name-input-error"></span>
         <input class="popup__input" id="url-input" name="placeLink" type="url" value="" placeholder="Ссылка на картинку" required>
         <span class="popup__input-error url-input-error"></span>
-        <button class="popup__button" type="submit">Создать</button>
+        <button class="popup__button" type="submit">
+          <span class="popup__button_text">Создать</span>
+        </button>
       </form>
     </div>
   </div>
@@ -91,7 +99,9 @@
         <h2 class="popup__title">Обновить аватар</h2>
         <input class="popup__input" id="url-input" name="avatarLink" type="url" value="" placeholder="Ссылка на изображение" required>
         <span class="popup__input-error url-input-error"></span>
-        <button class="popup__button" type="submit">Сохранить</button>
+        <button class="popup__button" type="submit">
+          <span class="popup__button_text">Сохранить</span>
+        </button>
       </form>
     </div>
   </div>
@@ -103,6 +113,18 @@
       </button>
       <img class="popup__image">
       <h2 class="popup__caption"></h2>
+    </div>
+  </div>
+
+  <div class="popup" id="deleCardPopup">
+    <div class="popup__container popup__container_delete-card">
+      <button class="popup__close-button" type="button">
+        <img class="popup__close-icon" src="<%=require('./images/Close_Icon.svg')%>" alt="Иконка закрыть окно">
+      </button>
+      <h2 class="popup__title popup__title_delete-card">Вы уверены?</h2>
+      <button class="popup__button popup__button_delete-card" type="button">
+        <span class="popup__button_text">Да</span>
+      </button>
     </div>
   </div>
 </body>

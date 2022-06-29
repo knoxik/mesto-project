@@ -1,12 +1,14 @@
 import '../pages/index.css';
-import { openPopup, closePopup } from './modal.js';
-import { createPlace, addPlace, deletePlace, createAndAddInitialCards } from './card.js';
+import { openPopup, closePopup, addButtonLoader, removeButtonLoader } from './modal.js';
+import { createPlace, addPlace, deletePlace, createAndAddInitialCards, renderLike } from './card.js';
 import { initialCardsArray } from './initialCards.js';
 import { enableValidation, toggleButtonState } from './validate.js';
 import { saveProfileInfo, editProfileInfo, updateAvatar,
-         editProfileForm, updateAvatarForm } from './profile.js';
+         editProfileForm, updateAvatarForm, renderProfile } from './profile.js';
+import { getUserInfo, getInitialCards, createCard, likeCard, dislikeCard } from './api.js';
 
 const content = document.querySelector('.content');
+const pageLoader = document.querySelector('.page__loader')
 const profileEditButton = content.querySelector('.profile__edit-button');
 export const popups = document.querySelectorAll('.popup')
 export const cardTemplate = document.querySelector('#card-grid__item').content;
@@ -23,6 +25,10 @@ const fullImageCaption = fullImagePopup.querySelector('.popup__caption');
 const fullImageElement = fullImagePopup.querySelector('.popup__image');
 const cardContainer = content.querySelector('.card-grid');
 
+const deleteCardPopup = document.querySelector('#deleCardPopup');
+const deleteCardButton = deleteCardPopup.querySelector('.popup__button');
+let cardForDelete = undefined;
+
 const updateAvatarButton = content.querySelector('.profile__avatar-btn');
 const updateAvatarPopup = document.querySelector('#updateAvatarPopup');
 export const validateConfig = {
@@ -35,15 +41,36 @@ export const validateConfig = {
 };
 
 function main() {
-  createAndAddInitialCards(initialCardsArray, cardContainer);
+  enableValidation(validateConfig);
+
+  getInitialCards()
+    .then(cardsArray => createAndAddInitialCards(cardsArray, cardContainer))
+    .then(user => renderProfile(user))
+    .then(() => pageLoader.remove());
 
   cardContainer.addEventListener('click', ({target}) => {
     if (target.classList.contains('card-grid__like-button')) {
-      target.classList.toggle('card-grid__like-button_active');
+      const card = target.closest('.card-grid__item');
+      const cardId = card.dataset.id;
+      const isLiked = card.dataset.like;
+
+      if (isLiked == 'true') {
+        dislikeCard(cardId)
+          .then((data) => {
+            renderLike(card, data)
+            card.dataset.like = false;
+          });
+      } else {
+        likeCard(cardId)
+          .then((data) => {
+            renderLike(card, data)
+            card.dataset.like = true;
+          });
+      }
     }
     else if (target.classList.contains('card-grid__trash-btn')) {
-      const placeItem = target.closest('.card-grid__item');
-      deletePlace(placeItem);
+      cardForDelete = target.closest('.card-grid__item');
+      openPopup(deleteCardPopup);
     }
     else if (target.classList.contains('card-grid__image')) {
       const cardTitle = target.closest('.card-grid__item').querySelector('.card-grid__title');
@@ -53,6 +80,13 @@ function main() {
       fullImageElement.alt = cardImage.alt;
       openPopup(fullImagePopup);
     }
+  });
+
+  deleteCardButton.addEventListener('click', (evt) => {
+    addButtonLoader(evt.target);
+    deletePlace(cardForDelete)
+      .then(() => removeButtonLoader(evt.target))
+      .then(() => closePopup(deleteCardPopup));
   });
 
   profileEditButton.addEventListener('click', function(evt) {
@@ -65,8 +99,12 @@ function main() {
 
   editProfileForm.addEventListener('submit', function(evt) {
     evt.preventDefault();
-    saveProfileInfo();
-    closePopup(editProfilePopup);
+    addButtonLoader(evt.submitter);
+    saveProfileInfo()
+      .then(() => {
+        removeButtonLoader(evt.submitter);
+        closePopup(editProfilePopup);
+      });
   });
 
   updateAvatarButton.addEventListener('click', () => {
@@ -77,10 +115,14 @@ function main() {
 
   addPlaceForm.addEventListener('submit', function(evt) {
     evt.preventDefault();
+    addButtonLoader(evt.submitter);
     toggleButtonState([], evt.submitter, validateConfig);
-    closePopup(addPlacePopup);
-    const place = createPlace(placeName.value, placeLink.value);
-    addPlace(place, cardContainer);
+    createCard(placeName.value, placeLink.value)
+      .then(card => {
+        addPlace(createPlace(card, true, false), cardContainer);
+        removeButtonLoader(evt.submitter);
+        closePopup(addPlacePopup);
+      });
     addPlaceForm.reset();
   });
 
@@ -92,8 +134,6 @@ function main() {
       }
     });
   });
-
-  enableValidation(validateConfig);
 }
 
 main();

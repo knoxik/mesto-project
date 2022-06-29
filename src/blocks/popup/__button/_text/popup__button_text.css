@@ -1,0 +1,17 @@
+.popup__button_text {
+  color: #FFFFFF;
+  font-size: 18px;
+  line-height: 22px;
+}
+
+.popup__button_loader .popup__button_text {
+  visibility: hidden;
+  opacity: 0;
+}
+
+@media screen and (max-width: 768px) {
+  .popup__button_text {
+    font-size: 14px;
+    line-height: 17px;
+  }
+}
