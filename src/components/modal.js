@@ -12,7 +12,7 @@ export function closePopup(obj) {
 
 function closePopupByEsc(evt) {
   if (evt.key == 'Escape') {
-    popups.forEach((popup) => {closePopup(popup)});
+    popups.forEach(closePopup);
   }
 }
 

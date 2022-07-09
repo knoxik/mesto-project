@@ -18,7 +18,8 @@ export function renderProfile(user) {
 
 export function saveProfileInfo() {
   return updateUserInfo(popupName.value, popupDescription.value)
-    .then(data => renderProfile(data));
+    .then(data => renderProfile(data))
+    .catch(err => console.log(err));
 }
 
 export function editProfileInfo() {
@@ -32,9 +33,12 @@ export function updateAvatar(evt) {
   addButtonLoader(evt.submitter)
   const link = updateAvatarForm.elements.avatarLink;
   updateUserAvatar(link.value)
-    .then(data => renderProfile(data))
-    .then(() => removeButtonLoader(evt.submitter))
-    .then(() => closePopup(updateAvatarPopup));
-  toggleButtonState([], evt.submitter, validateConfig);
-  updateAvatarForm.reset();
+    .then(data => {
+      updateAvatarForm.reset();
+      toggleButtonState([], evt.submitter, validateConfig);
+      renderProfile(data);
+      closePopup(updateAvatarPopup);
+    })
+    .catch(err => console.log(err))
+    .finally(() => removeButtonLoader(evt.submitter));
 }
