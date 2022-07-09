@@ -44,7 +44,6 @@ export function createPlace(card, isOwner, isLiked) {
   likeCounter.textContent = card.likes.length;
   cardImage.src = card.link;
   cardImage.alt = card.name;
-  cardElement.dataset.id = card._id;
   cardElement.querySelector('.card-grid__title').textContent = card.name;
 
   likeButton.addEventListener('click', () => {
