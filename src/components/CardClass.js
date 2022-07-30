@@ -1,13 +1,14 @@
 import { userId, cardForDelete } from '../utils/constants.js';
 
-class Card {
-  constructor({ data }, cardTemplateSelector) {
+export class Card {
+  constructor({ data, handleCardClick }, cardTemplateSelector) {
     this._selector = cardTemplateSelector;
     this.title = data.name;
     this.link = data.link;
     this.likes = data.likes;
     this._owner = data.owner;
     this._id = data._id;
+    this._handleCardClick = handleCardClick;
   }
 
   _getElement() {
@@ -36,6 +37,11 @@ class Card {
   _setEventListeners() {
     const likeButton = this._cardElement.querySelector('.card-grid__like-button');
     const trashButton = this._cardElement.querySelector('.card-grid__trash-btn');
+    const cardImage = this._cardElement.querySelector('.card-grid__image');
+
+    cardImage.addEventListener('click', () => {
+      this._handleCardClick();
+    })
 
     if (this.isOwner()) {
       trashButton.addEventListener('click', () => {
@@ -46,7 +52,6 @@ class Card {
     } else {
       trashButton.remove()
     }
-
   }
 
   isOwner() {
