@@ -1,4 +1,4 @@
-import { deleteCard, likeCard, dislikeCard } from './api.js';
+import { api } from './Api.js';
 import { cardTemplate, deleteCardPopup, fullImageCaption,
          fullImageElement, fullImagePopup } from './index.js';
 import { openPopup } from './modal.js';
@@ -50,14 +50,14 @@ export function createPlace(card, isOwner, isLiked) {
     const cardId = card._id;
 
     if (isLiked) {
-      dislikeCard(cardId)
+      api.dislikeCard(cardId)
         .then((data) => {
           renderLike(cardElement, data)
           isLiked = false;
         })
         .catch(err => console.log(err));
     } else {
-      likeCard(cardId)
+      api.likeCard(cardId)
         .then((data) => {
           renderLike(cardElement, data)
           isLiked = true;
@@ -91,7 +91,7 @@ export function addPlace(card, container) {
 }
 
 export function deletePlace(placeData) {
-  return deleteCard(placeData.id)
+  return api.deleteCard(placeData.id)
     .then(() => placeData.node.remove())
     .catch(err => {
       console.log(err);

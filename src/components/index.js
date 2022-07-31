@@ -4,7 +4,8 @@ import { createPlace, addPlace, deletePlace, createAndAddInitialCards, cardForDe
 import { enableValidation, toggleButtonState } from './validate.js';
 import { saveProfileInfo, editProfileInfo, updateAvatar,
          editProfileForm, updateAvatarForm, renderProfile } from './profile.js';
-import { getUserInfo, getInitialCards, createCard } from './api.js';
+import { api } from './Api.js';
+import { FormValidator } from './FormValidator.js';
 
 const content = document.querySelector('.content');
 const pageLoader = document.querySelector('.page__loader')
@@ -40,9 +41,12 @@ export const validateConfig = {
 let userId;
 
 function initApp() {
-  enableValidation(validateConfig);
-
-  Promise.all([getUserInfo(), getInitialCards()])
+  for (const form of document.forms){
+    const formValidator = new FormValidator(validateConfig, form);
+    formValidator.enableValidation();
+  }
+  
+  Promise.all([api.getUserInfo(), api.getInitialCards()])
     .then(([userData, cards]) => {
       userId = userData._id;
       createAndAddInitialCards(cards, cardContainer, userId);
@@ -94,7 +98,7 @@ function initApp() {
     evt.preventDefault();
     addButtonLoader(evt.submitter);
 
-    createCard(placeName.value, placeLink.value)
+    api.createCard(placeName.value, placeLink.value)
       .then(card => {
         addPlaceForm.reset();
         addPlace(createPlace(card, true, false), cardContainer);

@@ -1,7 +1,7 @@
 import { closePopup, addButtonLoader, removeButtonLoader } from "./modal.js";
 import { toggleButtonState } from './validate.js'
 import { validateConfig } from './index.js'
-import { getUserInfo, updateUserInfo, updateUserAvatar } from "./api.js";
+import { api } from "./Api.js";
 export const editProfileForm = document.forms.editProfile;
 export const updateAvatarForm = document.forms.updateAvatar;
 const profileName = document.querySelector('.profile__name');
@@ -17,7 +17,7 @@ export function renderProfile(user) {
 }
 
 export function saveProfileInfo() {
-  return updateUserInfo(popupName.value, popupDescription.value)
+  return api.updateUserInfo(popupName.value, popupDescription.value)
     .then(data => renderProfile(data))
     .catch(err => console.log(err));
 }
@@ -32,7 +32,7 @@ export function updateAvatar(evt) {
   evt.preventDefault();
   addButtonLoader(evt.submitter)
   const link = updateAvatarForm.elements.avatarLink;
-  updateUserAvatar(link.value)
+  api.updateUserAvatar(link.value)
     .then(data => {
       updateAvatarForm.reset();
       toggleButtonState([], evt.submitter, validateConfig);
