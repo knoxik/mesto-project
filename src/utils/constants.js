@@ -1,5 +1,8 @@
-export let userId = null;
+export let user = {
+  id: ''
+}
 export let cardForDelete = {
   node: '',
-  id: ''
+  id: '',
+  card: ''
 };

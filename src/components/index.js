@@ -1,11 +1,13 @@
 import '../pages/index.css';
 import { openPopup, closePopup, addButtonLoader, removeButtonLoader } from './modal.js';
-import { createPlace, addPlace, deletePlace, createAndAddInitialCards, cardForDelete } from './card.js';
+import { createPlace, addPlace, deletePlace, createAndAddInitialCards } from './card.js';
 import { enableValidation, toggleButtonState } from './validate.js';
 import { saveProfileInfo, editProfileInfo, updateAvatar,
          editProfileForm, updateAvatarForm, renderProfile } from './profile.js';
 import { api } from './Api.js';
 import { FormValidator } from './FormValidator.js';
+import { Card } from './CardClass.js';
+import Section from './Section.js';
 
 const content = document.querySelector('.content');
 const pageLoader = document.querySelector('.page__loader')
@@ -38,18 +40,30 @@ export const validateConfig = {
   inputErrorClass: 'popup__input_error',
   errorClass: 'popup__input-error_active'
 };
-let userId;
+import { user, cardForDelete } from '../utils/constants.js'
 
 function initApp() {
   for (const form of document.forms){
     const formValidator = new FormValidator(validateConfig, form);
     formValidator.enableValidation();
   }
-  
+
   Promise.all([api.getUserInfo(), api.getInitialCards()])
     .then(([userData, cards]) => {
-      userId = userData._id;
-      createAndAddInitialCards(cards, cardContainer, userId);
+      user.id = userData._id;
+      // createAndAddInitialCards(cards, cardContainer, userId);
+      const cardList = new Section({
+        items: cards,
+        renderer: (item) => {
+          const card = new Card({
+            data: item,
+            handleCardClick: () => {}
+          }, '#card-grid__item')
+          const cardElement = card.generate();
+          cardList.addItem(cardElement);
+        }
+      }, '.card-grid')
+      cardList.renderItems();
       renderProfile(userData);
     })
     .catch(err => {
@@ -59,7 +73,7 @@ function initApp() {
 
   deleteCardButton.addEventListener('click', (evt) => {
     addButtonLoader(evt.target);
-    deletePlace(cardForDelete)
+    cardForDelete.card.deletePlace(cardForDelete)
       .then(() => closePopup(deleteCardPopup))
       .catch(err => console.log(err))
       .finally(() => removeButtonLoader(evt.target))
@@ -101,7 +115,15 @@ function initApp() {
     api.createCard(placeName.value, placeLink.value)
       .then(card => {
         addPlaceForm.reset();
-        addPlace(createPlace(card, true, false), cardContainer);
+        // addPlace(createPlace(card, true, false), cardContainer);
+        const cardItem = new Card({
+          data: card,
+          handleCardClick: () => {}
+        }, '#card-grid__item')
+        const cardElement = cardItem.generate();
+        const cardList = new Section({}, '.card-grid')
+        cardList.addItemPrepend(cardElement);
+
         closePopup(addPlacePopup);
         toggleButtonState([], evt.submitter, validateConfig);
       })
