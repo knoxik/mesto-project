@@ -17,8 +17,8 @@ export class FormValidator {
         this._toggleButtonSubmit();
     }
 
-    _checkInputValidity (inputElement, errorElement) {
-        inputElement.textContent = errorElement.validationMessage;
+    _checkInputValidity (inputElement, errorElement) { 
+        errorElement.textContent = inputElement.validationMessage;      
         if (inputElement.validity.valid){
             inputElement.classList.remove(this._inputErrorClass);
             errorElement.classList.remove(this._errorClass);
@@ -26,6 +26,7 @@ export class FormValidator {
             inputElement.classList.add(this._inputErrorClass);
             errorElement.classList.add(this._errorClass);
         }
+        
     }
 
     _toggleButtonSubmit () {
