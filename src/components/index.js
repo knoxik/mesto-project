@@ -7,6 +7,7 @@ import { saveProfileInfo, editProfileInfo, updateAvatar,
 import { api } from './Api.js';
 import { FormValidator } from './FormValidator.js';
 import { Card } from './CardClass.js';
+import { PopupWithImage } from './PopupWithImage.js';
 import Section from './Section.js';
 
 const content = document.querySelector('.content');
@@ -22,9 +23,9 @@ const placeLink = addPlaceForm.elements.placeLink;
 
 const editProfilePopup = document.querySelector('#editProfilePopup');
 const addPlacePopup = document.querySelector('#addPlacePopup');
-export const fullImagePopup = document.querySelector('#fullImagePopup');
-export const fullImageCaption = fullImagePopup.querySelector('.popup__caption');
-export const fullImageElement = fullImagePopup.querySelector('.popup__image');
+// export const fullImagePopup = document.querySelector('#fullImagePopup');
+// export const fullImageCaption = fullImagePopup.querySelector('.popup__caption');
+// export const fullImageElement = fullImagePopup.querySelector('.popup__image');
 const cardContainer = content.querySelector('.card-grid');
 
 export const deleteCardPopup = document.querySelector('#deleCardPopup');
@@ -57,7 +58,10 @@ function initApp() {
         renderer: (item) => {
           const card = new Card({
             data: item,
-            handleCardClick: () => {}
+            handleCardClick: () => {
+              const fullImagePopup = new PopupWithImage('#fullImagePopup');
+              fullImagePopup.open({title: card.title, link: card.link});
+            }
           }, '#card-grid__item')
           const cardElement = card.generate();
           cardList.addItem(cardElement);
@@ -118,7 +122,10 @@ function initApp() {
         // addPlace(createPlace(card, true, false), cardContainer);
         const cardItem = new Card({
           data: card,
-          handleCardClick: () => {}
+          handleCardClick: () => {
+            const fullImagePopup = new PopupWithImage('#fullImagePopup');
+            fullImagePopup.open({title: card.name, link: card.link});
+          }
         }, '#card-grid__item')
         const cardElement = cardItem.generate();
         const cardList = new Section({}, '.card-grid')
