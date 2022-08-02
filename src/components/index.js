@@ -8,6 +8,7 @@ import { api } from './Api.js';
 import { FormValidator } from './FormValidator.js';
 import { Card } from './CardClass.js';
 import { PopupWithImage } from './PopupWithImage.js';
+import { UserInfo } from './UserInfo';
 import Section from './Section.js';
 
 const content = document.querySelector('.content');
@@ -68,7 +69,10 @@ function initApp() {
         }
       }, '.card-grid')
       cardList.renderItems();
-      renderProfile(userData);
+      // renderProfile(userData);
+      const userInfo = new UserInfo({nameSelector: '.profile__name', descriptionSelector: '.profile__description', avatarSelector: '.profile__avatar'});
+      userInfo.setUserInfo(userData.name, userData.about);
+      userInfo.setUserAvatar(userData.avatar);
     })
     .catch(err => {
       console.log(err);
