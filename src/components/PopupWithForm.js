@@ -1,13 +1,13 @@
 import { Popup } from './Popup.js';
-import { validateConfig } from './index.js';
+import { validateConfig } from '../utils/constants.js';
 
 export class PopupWithForm extends Popup{
     constructor (popupSelector, formSubmitCallback) {
         super (popupSelector);
         this._formSubmitCallback = formSubmitCallback;
-        this._formEl = this._popupSelector.querySelector(validateConfig.formSelector);
+        this.formEl = this._popupSelector.querySelector(validateConfig.formSelector);
         this._submitButton = this._popupSelector.querySelector(validateConfig.submitButtonSelector);
-        this._inputList = this._formEl.querySelectorAll(validateConfig.inputSelector);
+        this._inputList = this.formEl.querySelectorAll(validateConfig.inputSelector);
     }
 
     _getInputValues () {
@@ -20,17 +20,18 @@ export class PopupWithForm extends Popup{
 
     setEventListeners () {
         super.setEventListeners();
-        this._formEl.addEventListeners('submit',this._formSubmitCallback);
+        this.formEl.addEventListener('submit',this._formSubmitCallback);
     }
 
     close () {
         super.close();
+        this.formEl.removeEventListener('submit',  this._formSubmitCallback);
         this._submitButton.setAttribute('disabled', '');
         this._submitButton.classList.add(validateConfig.inactiveButtonClass);
-        this._formEl.reset();
+        this.formEl.reset();
         this._inputList.forEach(input => {
             input.classList.remove(validateConfig.inputErrorClass);
-            this._formEl.querySelector(`.${input.id}-error`).classList.remove(validateConfig.errorClass);
+            this.formEl.querySelector(`.${input.id}-error`).classList.remove(validateConfig.errorClass);
         })
     }
 }
