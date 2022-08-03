@@ -27,3 +27,9 @@ export class UserInfo {
     document.querySelector(this._avatarSelector).src = userAvatarLink;
   }
 }
+
+export const userInfo = new UserInfo({
+  nameSelector: '.profile__name',
+  descriptionSelector: '.profile__description',
+  avatarSelector: '.profile__avatar'
+});

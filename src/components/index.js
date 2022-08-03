@@ -3,10 +3,10 @@ import { addButtonLoader, removeButtonLoader } from './modal.js';
 import { api } from './Api.js';
 import { FormValidator } from './FormValidator.js';
 import { Card } from './Card.js';
-import { Popup } from './Popup.js';
+import { Popup, deleteCardPopup } from './Popup.js';
 import { PopupWithImage } from './PopupWithImage.js';
 import { PopupWithForm } from './PopupWithForm.js';
-import { UserInfo } from './UserInfo';
+import { userInfo } from './UserInfo';
 import { user, cardForDelete, validateConfig, pageLoader, profileEditButton,
          placeAddButton, deleteCardButton, updateAvatarButton } from '../utils/constants.js'
 import Section from './Section.js';
@@ -36,7 +36,6 @@ function initApp() {
         }
       }, '.card-grid')
       cardList.renderItems();
-      const userInfo = new UserInfo({nameSelector: '.profile__name', descriptionSelector: '.profile__description', avatarSelector: '.profile__avatar'});
       userInfo.setUserInfo(userData.name, userData.about);
       userInfo.setUserAvatar(userData.avatar);
     })
@@ -46,7 +45,6 @@ function initApp() {
     .finally(() => pageLoader.remove());
 
   deleteCardButton.addEventListener('click', (evt) => {
-    const deleteCardPopup = new Popup('#deleCardPopup');
     addButtonLoader(evt.target);
     cardForDelete.card.deletePlace(cardForDelete)
       .then(() => deleteCardPopup.close())
@@ -55,8 +53,6 @@ function initApp() {
   });
 
   profileEditButton.addEventListener('click', function(evt) {
-    const userInfo = new UserInfo({nameSelector: '.profile__name', descriptionSelector: '.profile__description', avatarSelector: '.profile__avatar'});
-
     const { userName, userDesctiption } = userInfo.getUserInfo();
     const profilePopup = new PopupWithForm('#editProfilePopup', (evt) => {
       evt.preventDefault();
@@ -118,7 +114,6 @@ function initApp() {
       const { avatarLink } = updateAvatarPopup._getInputValues();
       api.updateUserAvatar(avatarLink)
         .then(data => {
-          const userInfo = new UserInfo({nameSelector: '.profile__name', descriptionSelector: '.profile__description', avatarSelector: '.profile__avatar'});
           userInfo.setUserAvatar(avatarLink);
           updateAvatarPopup.close()
         })

@@ -1,6 +1,6 @@
 import { user, cardForDelete } from '../utils/constants.js';
 import { api } from './Api.js';
-import { Popup } from './Popup.js';
+import { Popup, deleteCardPopup } from './Popup.js';
 
 export class Card {
   constructor({ data, handleCardClick }, cardTemplateSelector) {
@@ -70,7 +70,6 @@ export class Card {
 
     if (this.isOwner()) {
       trashButton.addEventListener('click', () => {
-        const deleteCardPopup = new Popup('#deleCardPopup');
         cardForDelete.node = this._cardElement;
         cardForDelete.id = this._id;
         cardForDelete.card = this;
