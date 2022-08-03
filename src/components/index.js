@@ -8,6 +8,7 @@ import { api } from './Api.js';
 import { FormValidator } from './FormValidator.js';
 import { Card } from './CardClass.js';
 import { PopupWithImage } from './PopupWithImage.js';
+import { PopupWithForm } from './PopupWithForm.js';
 import { UserInfo } from './UserInfo';
 import Section from './Section.js';
 
@@ -34,6 +35,8 @@ const deleteCardButton = deleteCardPopup.querySelector('.popup__button');
 
 const updateAvatarButton = content.querySelector('.profile__avatar-btn');
 const updateAvatarPopup = document.querySelector('#updateAvatarPopup');
+
+const popupAdd = new PopupWithForm('#addPlacePopup')
 export const validateConfig = {
   formSelector: '.form',
   inputSelector: '.popup__input',
