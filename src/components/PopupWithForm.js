@@ -3,7 +3,7 @@ import { validateConfig } from '../utils/constants.js';
 import { addButtonLoader, removeButtonLoader } from './modal.js';
 import { api } from './Api.js';
 import { userInfo } from './UserInfo.js';
-import { Card } from './Card.js';
+import { Card, createCard } from './Card.js';
 import { cardList } from './Section.js';
 
 export class PopupWithForm extends Popup{
@@ -66,15 +66,9 @@ export const addPlacePopup = new PopupWithForm('#addPlacePopup', (evt) => {
 
   api.createCard(placeName, placeLink)
     .then(card => {
-      const cardItem = new Card({
-        data: card,
-        handleCardClick: () => {
-          fullImagePopup.open({title: card.name, link: card.link});
-        }
-      }, '#card-grid__item')
+      const cardItem = createCard(card, '#card-grid__item')
       const cardElement = cardItem.generate();
       cardList.addItemPrepend(cardElement);
-
       addPlacePopup.close();
     })
     .catch(err => {

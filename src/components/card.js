@@ -1,16 +1,19 @@
 import { user, cardForDelete } from '../utils/constants.js';
 import { api } from './Api.js';
 import { Popup, deleteCardPopup } from './Popup.js';
+import { fullImagePopup } from './PopupWithImage.js';
 
 export class Card {
-  constructor({ data, handleCardClick }, cardTemplateSelector) {
+  constructor({ data, handleCardClick, handleCardLike, handleCardDelete }, cardTemplateSelector) {
     this._selector = cardTemplateSelector;
     this.title = data.name;
     this.link = data.link;
     this.likes = data.likes;
     this._owner = data.owner;
-    this._id = data._id;
+    this.id = data._id;
     this._handleCardClick = handleCardClick;
+    this._handleCardLike = handleCardLike;
+    this._handleCardDelete = handleCardDelete;
   }
 
   _getElement() {
@@ -23,7 +26,7 @@ export class Card {
     return cardElement;
   }
 
-  _renderLike(data) {
+  renderLike(data) {
     const likeButton = this._cardElement.querySelector('.card-grid__like-button');
     const likeCounter = this._cardElement.querySelector('.card-grid__like-counter');
     likeButton.classList.toggle('card-grid__like-button_active');
@@ -32,6 +35,7 @@ export class Card {
 
   generate() {
     this._cardElement = this._getElement();
+    this.cardNode = this._cardElement;
     this.liked = this.isLiked();
     this._setEventListeners();
     const cardTitle = this._cardElement.querySelector('.card-grid__title');
@@ -51,14 +55,6 @@ export class Card {
     return this._cardElement;
   }
 
-  deletePlace(placeData) {
-    return api.deleteCard(placeData.id)
-      .then(() => placeData.node.remove())
-      .catch(err => {
-        console.log(err);
-      })
-  }
-
   _setEventListeners() {
     const likeButton = this._cardElement.querySelector('.card-grid__like-button');
     const trashButton = this._cardElement.querySelector('.card-grid__trash-btn');
@@ -70,33 +66,14 @@ export class Card {
 
     if (this.isOwner()) {
       trashButton.addEventListener('click', () => {
-        cardForDelete.node = this._cardElement;
-        cardForDelete.id = this._id;
-        cardForDelete.card = this;
-        deleteCardPopup.open();
+        this._handleCardDelete();
       });
     } else {
       trashButton.remove()
     }
 
     likeButton.addEventListener('click', () => {
-      const cardId = this._id;
-
-      if (this.liked) {
-        api.dislikeCard(cardId)
-          .then((data) => {
-            this._renderLike(data);
-            this.liked = false;
-          })
-          .catch(err => console.log(err));
-      } else {
-        api.likeCard(cardId)
-          .then((data) => {
-            this._renderLike(data)
-            this.liked = true;
-          })
-          .catch(err => console.log(err));
-      }
+      this._handleCardLike();
     });
   }
 
@@ -114,4 +91,49 @@ export class Card {
     })
     return res;
   }
+}
+
+export function createCard(item, selector) {
+  const card = new Card({
+    data: item,
+    handleCardClick: () => {
+      fullImagePopup.open({title: card.title, link: card.link});
+    },
+    handleCardLike: () => {
+      const cardId = card.id;
+
+      if (card.liked) {
+        api.dislikeCard(cardId)
+          .then((data) => {
+            card.renderLike(data);
+            card.liked = false;
+          })
+          .catch(err => console.log(err));
+      } else {
+        api.likeCard(cardId)
+          .then((data) => {
+            card.renderLike(data)
+            card.liked = true;
+          })
+          .catch(err => console.log(err));
+      }
+    },
+    handleCardDelete: () => {
+      cardForDelete.node = card.cardNode;
+      cardForDelete.id = card.id;
+      cardForDelete.card = card;
+      deleteCardPopup.open();
+    }
+  }, selector)
+
+  return card;
+}
+
+
+export function deletePlace(placeData) {
+  return api.deleteCard(placeData.id)
+    .then(() => placeData.node.remove())
+    .catch(err => {
+      console.log(err);
+    })
 }

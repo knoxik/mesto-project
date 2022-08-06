@@ -2,7 +2,7 @@ import '../pages/index.css';
 import { addButtonLoader, removeButtonLoader } from './modal.js';
 import { api } from './Api.js';
 import { FormValidator } from './FormValidator.js';
-import { Card } from './Card.js';
+import { Card, createCard, deletePlace } from './Card.js';
 import { deleteCardPopup } from './Popup.js';
 import { fullImagePopup } from './PopupWithImage.js';
 import { profilePopup, addPlacePopup, updateAvatarPopup } from './PopupWithForm.js';
@@ -23,12 +23,7 @@ function initApp() {
 
       cardList.renderedItems = cards;
       cardList.renderer = (item) => {
-        const card = new Card({
-          data: item,
-          handleCardClick: () => {
-            fullImagePopup.open({title: card.title, link: card.link});
-          }
-        }, '#card-grid__item')
+        const card = createCard(item, '#card-grid__item');
         const cardElement = card.generate();
         cardList.addItem(cardElement);
       }
@@ -43,7 +38,7 @@ function initApp() {
 
   deleteCardButton.addEventListener('click', (evt) => {
     addButtonLoader(evt.target);
-    cardForDelete.card.deletePlace(cardForDelete)
+    deletePlace(cardForDelete)
       .then(() => deleteCardPopup.close())
       .catch(err => console.log(err))
       .finally(() => removeButtonLoader(evt.target))
