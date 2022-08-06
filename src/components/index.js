@@ -11,6 +11,9 @@ import { user, cardForDelete, validateConfig, pageLoader, profileEditButton,
          placeAddButton, deleteCardButton, updateAvatarButton } from '../utils/constants.js'
 import Section from './Section.js';
 
+const cardList = new Section({}, '.card-grid')
+const fullImagePopup = new PopupWithImage('#fullImagePopup');
+
 
 function initApp() {
   for (const form of document.forms) {
@@ -21,20 +24,18 @@ function initApp() {
   Promise.all([api.getUserInfo(), api.getInitialCards()])
     .then(([userData, cards]) => {
       user.id = userData._id;
-      const cardList = new Section({
-        items: cards,
-        renderer: (item) => {
-          const card = new Card({
-            data: item,
-            handleCardClick: () => {
-              const fullImagePopup = new PopupWithImage('#fullImagePopup');
-              fullImagePopup.open({title: card.title, link: card.link});
-            }
-          }, '#card-grid__item')
-          const cardElement = card.generate();
-          cardList.addItem(cardElement);
-        }
-      }, '.card-grid')
+
+      cardList.renderedItems = cards;
+      cardList.renderer = (item) => {
+        const card = new Card({
+          data: item,
+          handleCardClick: () => {
+            fullImagePopup.open({title: card.title, link: card.link});
+          }
+        }, '#card-grid__item')
+        const cardElement = card.generate();
+        cardList.addItem(cardElement);
+      }
       cardList.renderItems();
       userInfo.setUserInfo(userData.name, userData.about);
       userInfo.setUserAvatar(userData.avatar);
@@ -87,12 +88,10 @@ function initApp() {
           const cardItem = new Card({
             data: card,
             handleCardClick: () => {
-              const fullImagePopup = new PopupWithImage('#fullImagePopup');
               fullImagePopup.open({title: card.name, link: card.link});
             }
           }, '#card-grid__item')
           const cardElement = cardItem.generate();
-          const cardList = new Section({}, '.card-grid')
           cardList.addItemPrepend(cardElement);
 
           addPlacePopup.close();

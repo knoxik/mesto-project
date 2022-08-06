@@ -3,28 +3,26 @@ export class UserInfo {
     this._nameSelector = nameSelector;
     this._descriptionSelector = descriptionSelector;
     this._avatarSelector = avatarSelector;
+    this._userName = document.querySelector(nameSelector);
+    this._userDesctiption = document.querySelector(descriptionSelector);
+    this._userAvatar = document.querySelector(avatarSelector);
   }
 
   getUserInfo() {
-    this._userName = document.querySelector(this._nameSelector).textContent;
-    this._userDesctiption = document.querySelector(this._descriptionSelector).textContent;
-
-    return { userName: this._userName, userDesctiption:  this._userDesctiption };
+    return { userName: this._userName.textContent, userDesctiption:  this._userDesctiption.textContent };
   }
 
   setUserInfo(userName, userDescription) {
-    document.querySelector(this._nameSelector).textContent = userName;
-    document.querySelector(this._descriptionSelector).textContent = userDescription;
+    this._userName.textContent = userName;
+    this._userDesctiption.textContent = userDescription;
   }
 
   getUserAvatar() {
-    this._userAvatar = document.querySelector(this._avatarSelector).src;
-
-    return { userAvatar: this._userAvatar };
+    return { userAvatar: this._userAvatar.src };
   }
 
   setUserAvatar(userAvatarLink) {
-    document.querySelector(this._avatarSelector).src = userAvatarLink;
+    this._userAvatar.src = userAvatarLink;
   }
 }
 
