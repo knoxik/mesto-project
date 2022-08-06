@@ -1,4 +1,4 @@
-export default class Section {
+export class Section {
   constructor({ items, renderer }, containerSelector) {
     this.renderedItems = items;
     this.renderer = renderer;
@@ -25,3 +25,5 @@ export default class Section {
     });
   }
 }
+
+export const cardList = new Section({}, '.card-grid')

@@ -1,5 +1,10 @@
 import { Popup } from './Popup.js';
 import { validateConfig } from '../utils/constants.js';
+import { addButtonLoader, removeButtonLoader } from './modal.js';
+import { api } from './Api.js';
+import { userInfo } from './UserInfo.js';
+import { Card } from './Card.js';
+import { cardList } from './Section.js';
 
 export class PopupWithForm extends Popup{
     constructor (popupSelector, formSubmitCallback) {
@@ -35,3 +40,60 @@ export class PopupWithForm extends Popup{
         })
     }
 }
+
+export const profilePopup = new PopupWithForm('#editProfilePopup', (evt) => {
+  evt.preventDefault();
+  addButtonLoader(evt.submitter);
+  const { profileName, profileDescription } = profilePopup._getInputValues();
+  api.updateUserInfo(profileName, profileDescription)
+  .then(() => {
+    userInfo.setUserInfo(profileName, profileDescription);
+    profilePopup.close();
+  })
+  .catch(err => {
+    console.log(err);
+  })
+  .finally(() => {
+    removeButtonLoader(evt.submitter);
+  })
+})
+
+export const addPlacePopup = new PopupWithForm('#addPlacePopup', (evt) => {
+  evt.preventDefault();
+  addButtonLoader(evt.submitter);
+
+  const { placeName, placeLink } = addPlacePopup._getInputValues();
+
+  api.createCard(placeName, placeLink)
+    .then(card => {
+      const cardItem = new Card({
+        data: card,
+        handleCardClick: () => {
+          fullImagePopup.open({title: card.name, link: card.link});
+        }
+      }, '#card-grid__item')
+      const cardElement = cardItem.generate();
+      cardList.addItemPrepend(cardElement);
+
+      addPlacePopup.close();
+    })
+    .catch(err => {
+      console.log(err);
+    })
+    .finally(() => {
+      removeButtonLoader(evt.submitter);
+    })
+})
+
+export const updateAvatarPopup = new PopupWithForm('#updateAvatarPopup', (evt) => {
+  evt.preventDefault();
+  addButtonLoader(evt.submitter)
+  const { avatarLink } = updateAvatarPopup._getInputValues();
+  api.updateUserAvatar(avatarLink)
+    .then(data => {
+      userInfo.setUserAvatar(avatarLink);
+      updateAvatarPopup.close()
+    })
+    .catch(err => console.log(err))
+    .finally(() => removeButtonLoader(evt.submitter));
+})
