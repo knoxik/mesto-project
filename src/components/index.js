@@ -11,12 +11,12 @@ import { user, cardForDelete, validateConfig, pageLoader, profileEditButton,
          placeAddButton, deleteCardButton, updateAvatarButton } from '../utils/constants.js'
 import { cardList } from './Section.js';
 
-function initApp() {
-  for (const form of document.forms) {
-    const formValidator = new FormValidator(validateConfig, form);
-    formValidator.enableValidation();
-  }
+for (const form of document.forms) {
+  const formValidator = new FormValidator(validateConfig, form);
+  formValidator.enableValidation();
+}
 
+function initApp() {
   Promise.all([api.getUserInfo(), api.getInitialCards()])
     .then(([userData, cards]) => {
       user.id = userData._id;

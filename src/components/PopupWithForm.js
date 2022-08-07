@@ -10,12 +10,14 @@ export class PopupWithForm extends Popup{
     constructor (popupSelector, formSubmitCallback) {
         super (popupSelector);
         this._formSubmitCallback = formSubmitCallback;
+        this._popupSelector = document.querySelector(popupSelector);
         this.formEl = this._popupSelector.querySelector(validateConfig.formSelector);
         this._submitButton = this._popupSelector.querySelector(validateConfig.submitButtonSelector);
         this._inputList = this.formEl.querySelectorAll(validateConfig.inputSelector);
+        
     }
 
-    _getInputValues () {
+    getInputValues () {
         this._inputValues = {};
         this._inputList.forEach( input => {
             this._inputValues[input.name] = input.value;
@@ -31,20 +33,15 @@ export class PopupWithForm extends Popup{
     close () {
         super.close();
         this.formEl.removeEventListener('submit',  this._formSubmitCallback);
-        this._submitButton.setAttribute('disabled', '');
         this._submitButton.classList.add(validateConfig.inactiveButtonClass);
         this.formEl.reset();
-        this._inputList.forEach(input => {
-            input.classList.remove(validateConfig.inputErrorClass);
-            this.formEl.querySelector(`.${input.id}-error`).classList.remove(validateConfig.errorClass);
-        })
     }
 }
 
 export const profilePopup = new PopupWithForm('#editProfilePopup', (evt) => {
   evt.preventDefault();
   addButtonLoader(evt.submitter);
-  const { profileName, profileDescription } = profilePopup._getInputValues();
+  const { profileName, profileDescription } = profilePopup.getInputValues();
   api.updateUserInfo(profileName, profileDescription)
   .then(() => {
     userInfo.setUserInfo(profileName, profileDescription);
@@ -62,7 +59,7 @@ export const addPlacePopup = new PopupWithForm('#addPlacePopup', (evt) => {
   evt.preventDefault();
   addButtonLoader(evt.submitter);
 
-  const { placeName, placeLink } = addPlacePopup._getInputValues();
+  const { placeName, placeLink } = addPlacePopup.getInputValues();
 
   api.createCard(placeName, placeLink)
     .then(card => {
@@ -82,7 +79,7 @@ export const addPlacePopup = new PopupWithForm('#addPlacePopup', (evt) => {
 export const updateAvatarPopup = new PopupWithForm('#updateAvatarPopup', (evt) => {
   evt.preventDefault();
   addButtonLoader(evt.submitter)
-  const { avatarLink } = updateAvatarPopup._getInputValues();
+  const { avatarLink } = updateAvatarPopup.getInputValues();
   api.updateUserAvatar(avatarLink)
     .then(data => {
       userInfo.setUserAvatar(avatarLink);
