@@ -93,43 +93,6 @@ export class Card {
   }
 }
 
-export function createCard(item, selector) {
-  const card = new Card({
-    data: item,
-    handleCardClick: () => {
-      fullImagePopup.open({title: card.title, link: card.link});
-    },
-    handleCardLike: () => {
-      const cardId = card.id;
-
-      if (card.liked) {
-        api.dislikeCard(cardId)
-          .then((data) => {
-            card.renderLike(data);
-            card.liked = false;
-          })
-          .catch(err => console.log(err));
-      } else {
-        api.likeCard(cardId)
-          .then((data) => {
-            card.renderLike(data)
-            card.liked = true;
-          })
-          .catch(err => console.log(err));
-      }
-    },
-    handleCardDelete: () => {
-      cardForDelete.node = card.cardNode;
-      cardForDelete.id = card.id;
-      cardForDelete.card = card;
-      deleteCardPopup.open();
-    }
-  }, selector)
-
-  return card;
-}
-
-
 export function deletePlace(placeData) {
   return api.deleteCard(placeData.id)
     .then(() => placeData.node.remove())

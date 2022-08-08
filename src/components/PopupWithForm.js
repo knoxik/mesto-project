@@ -14,7 +14,7 @@ export class PopupWithForm extends Popup{
         this.formEl = this._popupSelector.querySelector(validateConfig.formSelector);
         this._submitButton = this._popupSelector.querySelector(validateConfig.submitButtonSelector);
         this._inputList = this.formEl.querySelectorAll(validateConfig.inputSelector);
-        
+
     }
 
     getInputValues () {
@@ -37,54 +37,3 @@ export class PopupWithForm extends Popup{
         this.formEl.reset();
     }
 }
-
-export const profilePopup = new PopupWithForm('#editProfilePopup', (evt) => {
-  evt.preventDefault();
-  addButtonLoader(evt.submitter);
-  const { profileName, profileDescription } = profilePopup.getInputValues();
-  api.updateUserInfo(profileName, profileDescription)
-  .then(() => {
-    userInfo.setUserInfo(profileName, profileDescription);
-    profilePopup.close();
-  })
-  .catch(err => {
-    console.log(err);
-  })
-  .finally(() => {
-    removeButtonLoader(evt.submitter);
-  })
-})
-
-export const addPlacePopup = new PopupWithForm('#addPlacePopup', (evt) => {
-  evt.preventDefault();
-  addButtonLoader(evt.submitter);
-
-  const { placeName, placeLink } = addPlacePopup.getInputValues();
-
-  api.createCard(placeName, placeLink)
-    .then(card => {
-      const cardItem = createCard(card, '#card-grid__item')
-      const cardElement = cardItem.generate();
-      cardList.addItemPrepend(cardElement);
-      addPlacePopup.close();
-    })
-    .catch(err => {
-      console.log(err);
-    })
-    .finally(() => {
-      removeButtonLoader(evt.submitter);
-    })
-})
-
-export const updateAvatarPopup = new PopupWithForm('#updateAvatarPopup', (evt) => {
-  evt.preventDefault();
-  addButtonLoader(evt.submitter)
-  const { avatarLink } = updateAvatarPopup.getInputValues();
-  api.updateUserAvatar(avatarLink)
-    .then(data => {
-      userInfo.setUserAvatar(avatarLink);
-      updateAvatarPopup.close()
-    })
-    .catch(err => console.log(err))
-    .finally(() => removeButtonLoader(evt.submitter));
-})

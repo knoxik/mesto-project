@@ -14,5 +14,3 @@ export class PopupWithImage extends Popup {
     super.open();
   }
 }
-
-export const fullImagePopup = new PopupWithImage('#fullImagePopup');

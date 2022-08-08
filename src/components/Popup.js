@@ -33,6 +33,3 @@ export class Popup{
         document.addEventListener('keydown', this._handleEscClose);
     }
 }
-
-
-export const deleteCardPopup = new Popup('#deleCardPopup');
