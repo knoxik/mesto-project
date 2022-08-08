@@ -33,6 +33,11 @@ export class Card {
     likeCounter.textContent = data.likes.length;
   }
 
+  deleteCard() {
+    this._cardElement.remove();
+    this._cardElement = null;
+  }
+
   generate() {
     this._cardElement = this._getElement();
     this.cardNode = this._cardElement;
@@ -91,12 +96,4 @@ export class Card {
     })
     return res;
   }
-}
-
-export function deletePlace(placeData) {
-  return api.deleteCard(placeData.id)
-    .then(() => placeData.node.remove())
-    .catch(err => {
-      console.log(err);
-    })
 }

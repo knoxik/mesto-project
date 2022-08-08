@@ -2,7 +2,7 @@ import '../pages/index.css';
 import { addButtonLoader, removeButtonLoader } from './modal.js';
 import { api } from './Api.js';
 import { FormValidator } from './FormValidator.js';
-import { Card, deletePlace } from './Card.js';
+import { Card } from './Card.js';
 import { Popup } from './Popup.js';
 import { UserInfo } from './UserInfo';
 import { user, cardForDelete, validateConfig, pageLoader, profileEditButton,
@@ -135,8 +135,11 @@ function initApp() {
 
   deleteCardButton.addEventListener('click', (evt) => {
     addButtonLoader(evt.target);
-    deletePlace(cardForDelete)
-      .then(() => deleteCardPopup.close())
+    api.deleteCard(cardForDelete.id)
+      .then(() => {
+        cardForDelete.card.deleteCard()
+        deleteCardPopup.close()
+      })
       .catch(err => console.log(err))
       .finally(() => removeButtonLoader(evt.target))
   });
