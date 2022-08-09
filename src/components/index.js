@@ -6,11 +6,16 @@ import { Card } from './Card.js';
 import { Popup } from './Popup.js';
 import { UserInfo } from './UserInfo';
 import { user, cardForDelete, validateConfig, pageLoader, profileEditButton,
-         placeAddButton, deleteCardButton, updateAvatarButton } from '../utils/constants.js'
+         placeAddButton, deleteCardButton, updateAvatarButton,
+         editProfileForm, updateAvatarForm, addPlaceForm } from '../utils/constants.js'
 import { cardList } from './Section.js';
 import { PopupWithForm } from './PopupWithForm.js';
 import { PopupWithImage } from './PopupWithImage.js';
 
+
+const editProfileValidator = new FormValidator(validateConfig, editProfileForm);
+const updateAvatarValidator = new FormValidator(validateConfig, updateAvatarForm);
+const addPlaceValidator = new FormValidator(validateConfig, addPlaceForm);
 const deleteCardPopup = new Popup('#deleCardPopup');
 const fullImagePopup = new PopupWithImage('#fullImagePopup');
 
@@ -50,7 +55,7 @@ const addPlacePopup = new PopupWithForm('#addPlacePopup', (evt) => {
     })
 })
 
-const updateAvatarPopup = new PopupWithForm('#updateAvatarPopup', (evt) => { 
+const updateAvatarPopup = new PopupWithForm('#updateAvatarPopup', (evt) => {
   evt.preventDefault();
   addButtonLoader(evt.submitter)
   const { avatarLink } = updateAvatarPopup.getInputValues();
@@ -106,6 +111,10 @@ function createCard(item, selector) {
 }
 
 function initApp() {
+  editProfileValidator.enableValidation();
+  updateAvatarValidator.enableValidation();
+  addPlaceValidator.enableValidation();
+
   Promise.all([api.getUserInfo(), api.getInitialCards()])
     .then(([userData, cards]) => {
       user.id = userData._id;
@@ -137,10 +146,6 @@ function initApp() {
   });
 
   profileEditButton.addEventListener('click', function(evt) {
-    for (const form of document.forms) {
-      const formValidatorProfile = new FormValidator(validateConfig, form);
-      formValidatorProfile.enableValidation();
-    }
     const { userName, userDesctiption } = userInfo.getUserInfo();
     profilePopup.formEl.elements.profileName.value = userName;
     profilePopup.formEl.elements.profileDescription.value = userDesctiption;
@@ -148,18 +153,10 @@ function initApp() {
   });
 
   placeAddButton.addEventListener('click', function() {
-    for (const form of document.forms) {
-      const formValidatorPlace = new FormValidator(validateConfig, form);
-      formValidatorPlace.enableValidation();
-    }
     addPlacePopup.open();
   });
 
   updateAvatarButton.addEventListener('click', () => {
-    for (const form of document.forms) {
-      const formValidatorAvatar = new FormValidator(validateConfig, form);
-      formValidatorAvatar.enableValidation();
-    }
     updateAvatarPopup.open();
   });
 }
