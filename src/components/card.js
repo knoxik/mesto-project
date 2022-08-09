@@ -1,7 +1,7 @@
 import { user, cardForDelete } from '../utils/constants.js';
 import { api } from './Api.js';
-import { Popup, deleteCardPopup } from './Popup.js';
-import { fullImagePopup } from './PopupWithImage.js';
+// import { Popup, deleteCardPopup } from './Popup.js';
+// import { fullImagePopup } from './PopupWithImage.js';
 
 export class Card {
   constructor({ data, handleCardClick, handleCardLike, handleCardDelete }, cardTemplateSelector) {
