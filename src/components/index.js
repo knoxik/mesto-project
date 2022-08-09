@@ -1,52 +1,133 @@
 import '../pages/index.css';
-import { openPopup, closePopup, addButtonLoader, removeButtonLoader } from './modal.js';
-import { createPlace, addPlace, deletePlace, createAndAddInitialCards, cardForDelete } from './card.js';
-import { enableValidation, toggleButtonState } from './validate.js';
-import { saveProfileInfo, editProfileInfo, updateAvatar,
-         editProfileForm, updateAvatarForm, renderProfile } from './profile.js';
-import { getUserInfo, getInitialCards, createCard } from './api.js';
+import { addButtonLoader, removeButtonLoader } from './modal.js';
+import { api } from './Api.js';
+import { FormValidator } from './FormValidator.js';
+import { Card } from './Card.js';
+import { Popup } from './Popup.js';
+import { UserInfo } from './UserInfo';
+import { user, cardForDelete, validateConfig, pageLoader, profileEditButton,
+         placeAddButton, deleteCardButton, updateAvatarButton,
+         editProfileForm, updateAvatarForm, addPlaceForm } from '../utils/constants.js'
+import { cardList } from './Section.js';
+import { PopupWithForm } from './PopupWithForm.js';
+import { PopupWithImage } from './PopupWithImage.js';
 
-const content = document.querySelector('.content');
-const pageLoader = document.querySelector('.page__loader')
-const profileEditButton = content.querySelector('.profile__edit-button');
-export const popups = document.querySelectorAll('.popup')
-export const cardTemplate = document.querySelector('#card-grid__item').content;
 
-const addPlaceForm =  document.forms.addPlace;
-const placeAddButton = content.querySelector('.profile__add-button');
-const placeName = addPlaceForm.elements.placeName;
-const placeLink = addPlaceForm.elements.placeLink;
+const editProfileValidator = new FormValidator(validateConfig, editProfileForm);
+const updateAvatarValidator = new FormValidator(validateConfig, updateAvatarForm);
+const addPlaceValidator = new FormValidator(validateConfig, addPlaceForm);
+const deleteCardPopup = new Popup('#deleCardPopup');
+const fullImagePopup = new PopupWithImage('#fullImagePopup');
 
-const editProfilePopup = document.querySelector('#editProfilePopup');
-const addPlacePopup = document.querySelector('#addPlacePopup');
-export const fullImagePopup = document.querySelector('#fullImagePopup');
-export const fullImageCaption = fullImagePopup.querySelector('.popup__caption');
-export const fullImageElement = fullImagePopup.querySelector('.popup__image');
-const cardContainer = content.querySelector('.card-grid');
+const profilePopup = new PopupWithForm('#editProfilePopup', (evt) => {
+  evt.preventDefault();
+  addButtonLoader(evt.submitter);
+  const { profileName, profileDescription } = profilePopup.getInputValues();
+  api.updateUserInfo(profileName, profileDescription)
+  .then(() => {
+    userInfo.setUserInfo(profileName, profileDescription);
+    profilePopup.close();
+  })
+  .catch(err => {
+    console.log(err);
+  })
+  .finally(() => {
+    removeButtonLoader(evt.submitter);
+  })
+})
 
-export const deleteCardPopup = document.querySelector('#deleCardPopup');
-const deleteCardButton = deleteCardPopup.querySelector('.popup__button');
+const addPlacePopup = new PopupWithForm('#addPlacePopup', (evt) => {
+  evt.preventDefault();
+  addButtonLoader(evt.submitter);
+  const { placeName, placeLink } = addPlacePopup.getInputValues();
+  api.createCard(placeName, placeLink)
+    .then(card => {
+      const cardItem = createCard(card, '#card-grid__item')
+      const cardElement = cardItem.generate();
+      cardList.addItemPrepend(cardElement);
+      addPlacePopup.close();
+    })
+    .catch(err => {
+      console.log(err);
+    })
+    .finally(() => {
+      removeButtonLoader(evt.submitter);
+    })
+})
 
-const updateAvatarButton = content.querySelector('.profile__avatar-btn');
-const updateAvatarPopup = document.querySelector('#updateAvatarPopup');
-export const validateConfig = {
-  formSelector: '.form',
-  inputSelector: '.popup__input',
-  submitButtonSelector: '.popup__button',
-  inactiveButtonClass: 'popup__button_disabled',
-  inputErrorClass: 'popup__input_error',
-  errorClass: 'popup__input-error_active'
-};
-let userId;
+const updateAvatarPopup = new PopupWithForm('#updateAvatarPopup', (evt) => {
+  evt.preventDefault();
+  addButtonLoader(evt.submitter)
+  const { avatarLink } = updateAvatarPopup.getInputValues();
+  api.updateUserAvatar(avatarLink)
+    .then(data => {
+      userInfo.setUserAvatar(avatarLink);
+      updateAvatarPopup.close()
+    })
+    .catch(err => console.log(err))
+    .finally(() => removeButtonLoader(evt.submitter));
+})
+
+const userInfo = new UserInfo({
+  nameSelector: '.profile__name',
+  descriptionSelector: '.profile__description',
+  avatarSelector: '.profile__avatar'
+});
+
+function createCard(item, selector) {
+  const card = new Card({
+    data: item,
+    handleCardClick: () => {
+      fullImagePopup.open({title: card.title, link: card.link});
+    },
+    handleCardLike: () => {
+      const cardId = card.id;
+
+      if (card.liked) {
+        api.dislikeCard(cardId)
+          .then((data) => {
+            card.renderLike(data);
+            card.liked = false;
+          })
+          .catch(err => console.log(err));
+      } else {
+        api.likeCard(cardId)
+          .then((data) => {
+            card.renderLike(data)
+            card.liked = true;
+          })
+          .catch(err => console.log(err));
+      }
+    },
+    handleCardDelete: () => {
+      cardForDelete.node = card.cardNode;
+      cardForDelete.id = card.id;
+      cardForDelete.card = card;
+      deleteCardPopup.open();
+    }
+  }, selector)
+
+  return card;
+}
 
 function initApp() {
-  enableValidation(validateConfig);
+  editProfileValidator.enableValidation();
+  updateAvatarValidator.enableValidation();
+  addPlaceValidator.enableValidation();
 
-  Promise.all([getUserInfo(), getInitialCards()])
+  Promise.all([api.getUserInfo(), api.getInitialCards()])
     .then(([userData, cards]) => {
-      userId = userData._id;
-      createAndAddInitialCards(cards, cardContainer, userId);
-      renderProfile(userData);
+      user.id = userData._id;
+
+      cardList.renderedItems = cards;
+      cardList.renderer = (item) => {
+        const card = createCard(item, '#card-grid__item');
+        const cardElement = card.generate();
+        cardList.addItem(cardElement);
+      }
+      cardList.renderItems();
+      userInfo.setUserInfo(userData.name, userData.about);
+      userInfo.setUserAvatar(userData.avatar);
     })
     .catch(err => {
       console.log(err);
@@ -55,67 +136,28 @@ function initApp() {
 
   deleteCardButton.addEventListener('click', (evt) => {
     addButtonLoader(evt.target);
-    deletePlace(cardForDelete)
-      .then(() => closePopup(deleteCardPopup))
+    api.deleteCard(cardForDelete.id)
+      .then(() => {
+        cardForDelete.card.deleteCard()
+        deleteCardPopup.close()
+      })
       .catch(err => console.log(err))
       .finally(() => removeButtonLoader(evt.target))
   });
 
   profileEditButton.addEventListener('click', function(evt) {
-    editProfileInfo();
-    openPopup(editProfilePopup);
-  });
-  placeAddButton.addEventListener('click', function() {
-    openPopup(addPlacePopup);
+    const { userName, userDesctiption } = userInfo.getUserInfo();
+    profilePopup.formEl.elements.profileName.value = userName;
+    profilePopup.formEl.elements.profileDescription.value = userDesctiption;
+    profilePopup.open();
   });
 
-  editProfileForm.addEventListener('submit', function(evt) {
-    evt.preventDefault();
-    addButtonLoader(evt.submitter);
-    saveProfileInfo()
-      .then(() => {
-        closePopup(editProfilePopup);
-      })
-      .catch(err => {
-        console.log(err);
-      })
-      .finally(() => {
-        removeButtonLoader(evt.submitter);
-      })
+  placeAddButton.addEventListener('click', function() {
+    addPlacePopup.open();
   });
 
   updateAvatarButton.addEventListener('click', () => {
-    openPopup(updateAvatarPopup);
-  });
-  updateAvatarForm.addEventListener('submit', updateAvatar)
-
-
-  addPlaceForm.addEventListener('submit', function(evt) {
-    evt.preventDefault();
-    addButtonLoader(evt.submitter);
-
-    createCard(placeName.value, placeLink.value)
-      .then(card => {
-        addPlaceForm.reset();
-        addPlace(createPlace(card, true, false), cardContainer);
-        closePopup(addPlacePopup);
-        toggleButtonState([], evt.submitter, validateConfig);
-      })
-      .catch(err => {
-        console.log(err);
-      })
-      .finally(() => {
-        removeButtonLoader(evt.submitter);
-      })
-  });
-
-  popups.forEach(function(popup) {
-    popup.addEventListener('click', ({target}) => {
-      if (target.classList.contains('popup__close-icon')
-          || target.classList.contains('popup')) {
-        closePopup(target.closest('.popup'));
-      }
-    });
+    updateAvatarPopup.open();
   });
 }
 

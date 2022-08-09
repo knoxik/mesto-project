@@ -1,107 +1,96 @@
-import { deleteCard, likeCard, dislikeCard } from './api.js';
-import { cardTemplate, deleteCardPopup, fullImageCaption,
-         fullImageElement, fullImagePopup } from './index.js';
-import { openPopup } from './modal.js';
+import { user } from '../utils/constants.js';
 
-export let cardForDelete = {
-  node: '',
-  id: ''
-};
-
-
-export function createAndAddInitialCards(initialCardsArray, cardContainer, userId) {
-  for (let i = initialCardsArray.length - 1; i !== -1; i--) {
-    const card = initialCardsArray[i];
-    addPlace(createPlace(card, isOwner(userId, card.owner._id), isLiked(userId, card)), cardContainer);
+export class Card {
+  constructor({ data, handleCardClick, handleCardLike, handleCardDelete }, cardTemplateSelector) {
+    this._selector = cardTemplateSelector;
+    this.title = data.name;
+    this.link = data.link;
+    this.likes = data.likes;
+    this._owner = data.owner;
+    this.id = data._id;
+    this._handleCardClick = handleCardClick;
+    this._handleCardLike = handleCardLike;
+    this._handleCardDelete = handleCardDelete;
   }
-}
 
-function isOwner(userId, ownerId) {
-  return userId == ownerId;
-}
+  _getElement() {
+    const cardElement = document
+      .querySelector(this._selector)
+      .content
+      .querySelector('.card-grid__item')
+      .cloneNode(true);
 
-function isLiked(userId, card) {
-  let res = false;
-  card.likes.forEach((like) => {
-    if (like._id == userId) {
-      res = true;
-      return;
-    };
-  })
-  return res;
-}
-
-export function createPlace(card, isOwner, isLiked) {
-  const cardElement = cardTemplate.querySelector('.card-grid__item').cloneNode(true);
-  const cardImage = cardElement.querySelector('.card-grid__image');
-  const likeCounter = cardElement.querySelector('.card-grid__like-counter');
-  const likeButton = cardElement.querySelector('.card-grid__like-button');
-  const trashButton = cardElement.querySelector('.card-grid__trash-btn');
-
-  if (isLiked) {
-    likeButton.classList.add('card-grid__like-button_active');
+    return cardElement;
   }
-  likeCounter.textContent = card.likes.length;
-  cardImage.src = card.link;
-  cardImage.alt = card.name;
-  cardElement.querySelector('.card-grid__title').textContent = card.name;
 
-  likeButton.addEventListener('click', () => {
-    const cardId = card._id;
+  renderLike(data) {
+    const likeButton = this._cardElement.querySelector('.card-grid__like-button');
+    const likeCounter = this._cardElement.querySelector('.card-grid__like-counter');
+    likeButton.classList.toggle('card-grid__like-button_active');
+    likeCounter.textContent = data.likes.length;
+  }
 
-    if (isLiked) {
-      dislikeCard(cardId)
-        .then((data) => {
-          renderLike(cardElement, data)
-          isLiked = false;
-        })
-        .catch(err => console.log(err));
-    } else {
-      likeCard(cardId)
-        .then((data) => {
-          renderLike(cardElement, data)
-          isLiked = true;
-        })
-        .catch(err => console.log(err));
+  deleteCard() {
+    this._cardElement.remove();
+    this._cardElement = null;
+  }
+
+  generate() {
+    this._cardElement = this._getElement();
+    this.cardNode = this._cardElement;
+    this.liked = this.isLiked();
+    this._setEventListeners();
+    const cardTitle = this._cardElement.querySelector('.card-grid__title');
+    const cardImage = this._cardElement.querySelector('.card-grid__image');
+    const likeCounter = this._cardElement.querySelector('.card-grid__like-counter');
+    const likeButton = this._cardElement.querySelector('.card-grid__like-button');
+
+    if (this.liked) {
+      likeButton.classList.add('card-grid__like-button_active');
     }
-  });
+    likeCounter.textContent = this.likes.length;
 
-  if (isOwner) {
-    trashButton.addEventListener('click', () => {
-      cardForDelete.node = cardElement;
-      cardForDelete.id = card._id;
-      openPopup(deleteCardPopup);
-    });
-  } else {
-    trashButton.remove()
+    cardTitle.textContent = this.title;
+    cardImage.src = this.link;
+    cardImage.alt = this.title;
+
+    return this._cardElement;
   }
 
-  cardImage.addEventListener('click', () => {
-    fullImageCaption.textContent = card.name;
-    fullImageElement.src = card.link;
-    fullImageElement.alt = card.name;
-    openPopup(fullImagePopup);
-  });
+  _setEventListeners() {
+    const likeButton = this._cardElement.querySelector('.card-grid__like-button');
+    const trashButton = this._cardElement.querySelector('.card-grid__trash-btn');
+    const cardImage = this._cardElement.querySelector('.card-grid__image');
 
-  return cardElement;
-}
-
-export function addPlace(card, container) {
-  container.prepend(card);
-}
-
-export function deletePlace(placeData) {
-  return deleteCard(placeData.id)
-    .then(() => placeData.node.remove())
-    .catch(err => {
-      console.log(err);
+    cardImage.addEventListener('click', () => {
+      this._handleCardClick();
     })
-}
 
-export function renderLike(card, data) {
-  const likeButton = card.querySelector('.card-grid__like-button');
-  const likeCounter = card.querySelector('.card-grid__like-counter');
-  likeButton.classList.toggle('card-grid__like-button_active');
-  likeCounter.textContent = data.likes.length;
-}
+    if (this.isOwner()) {
+      trashButton.addEventListener('click', () => {
+        this._handleCardDelete();
+      });
+    } else {
+      trashButton.remove()
+    }
 
+    likeButton.addEventListener('click', () => {
+      this._handleCardLike();
+    });
+  }
+
+  isOwner() {
+    return user.id == this._owner._id;
+  }
+
+  isLiked() {
+    let res = false;
+    this.likes.forEach((like) => {
+      if (like._id == user.id) {
+        res = true;
+        return;
+      };
+    })
+    return res;
+  }
+}
